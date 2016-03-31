@@ -1,6 +1,7 @@
 (ns geocoding
   (:require [clj-http.client :as http]
             [clojure.data.json :as json]
+            [clojure.set :refer [rename-keys]]
             [camel-snake-kebab.extras :refer [transform-keys]]
             [camel-snake-kebab.core :refer :all]))
 
@@ -18,8 +19,10 @@
           {}
           m))
 
-(defn format-result [{:keys [address-components] :as m}]
-  (dissoc (merge m (get-address-components address-components)) :address-components))
+(defn format-result [{:keys [address-components types] :as m}]
+  (-> (merge m (get-address-components address-components))
+      (dissoc :address-components)
+      (rename-keys {(->kebab-case-keyword (first types)) :locality})))
 
 (defn geocode [s opts]
   (->> (http/get (str base-url "json")

@@ -21,9 +21,10 @@
 
 (defn format-result [{:keys [address-components types] :as m}]
   (let [address-components* (get-address-components address-components)]
+    (prn address-components*)
     (-> (merge m address-components*)
-        (dissoc :address-components)
-        (assoc :locality (get address-components* (first types))))))
+        (update :locality :long-name)
+        (dissoc :address-components))))
 
 (defn geocode [s opts]
   (->> (http/get (str base-url "json")

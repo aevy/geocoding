@@ -21,7 +21,6 @@
 
 (defn format-result [{:keys [address-components types] :as m}]
   (let [address-components* (get-address-components address-components)]
-    (prn address-components*)
     (-> (merge m address-components*)
         (update :locality :long-name)
         (dissoc :address-components))))

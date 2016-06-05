@@ -13,9 +13,11 @@
 
 (defn get-address-components [m]
   (reduce (fn [m' ac]
-            (assoc m'
-                   (->kebab-case-keyword (get-in ac [:types 0]))
-                   (dissoc ac :types)))
+            (if-let [k (not-empty (get-in ac [:types 0]))]
+              (assoc m'
+                     (->kebab-case-keyword k)
+                     (dissoc ac :types))
+              m'))
           {}
           m))
 
